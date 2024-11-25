@@ -11,7 +11,6 @@
 #define BUFFER_SIZE 1024
 #define PORT 8080
 
-// Define a structure to hold subscriber information
 typedef struct
 {
     int socket;
@@ -22,9 +21,7 @@ Subscriber subscribers[MAX_CLIENTS];
 int subscriber_count = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-sqlite3 *db; // SQLite database connection
-
-// Function to insert new subscribers into the database
+sqlite3 *db;
 
 void reset_subscribers(){
     memset(subscribers , 0 ,sizeof(subscribers));
@@ -54,7 +51,7 @@ void remove_subscriber(int socket)
     }
     pthread_mutex_unlock(&mutex);
 }
-// Function to send messages to subscribers
+
 void send_message_to_subscribers(const char *topic, const char *message)
 {
     pthread_mutex_lock(&mutex);
@@ -87,7 +84,7 @@ void *send_message_to_subscribers_thread(void *args)
     return NULL;
 }
 
-// Thread to handle subscriber connections
+
 void *handle_subscriber(void *arg)
 {
     int new_socket = *(int *)arg;
@@ -99,9 +96,8 @@ void *handle_subscriber(void *arg)
         close(new_socket);
         return NULL;
     }
-    topic[strcspn(topic, "\n")] = 0; // Remove newline character
+    topic[strcspn(topic, "\n")] = 0;
 
-    // Register subscriber in the database
     insert_subscriber(new_socket, topic);
 
     pthread_mutex_lock(&mutex);
@@ -133,7 +129,6 @@ void *handle_subscriber(void *arg)
     return NULL;
 }
 
-// Thread to handle publisher connections
 void *handle_publisher(void *arg)
 {
     clock_t start_time, end_time; ///////////////////////////////to check the runtime of this function
@@ -151,7 +146,7 @@ void *handle_publisher(void *arg)
         close(new_socket);
         return NULL;
     }
-    topic[strcspn(topic, "\n")] = 0; // Remove newline character
+    topic[strcspn(topic, "\n")] = 0;
 
     if (recv(new_socket, message, sizeof(message), 0) <= 0)
     {
@@ -159,7 +154,7 @@ void *handle_publisher(void *arg)
         close(new_socket);
         return NULL;
     }
-    message[strcspn(message, "\n")] = 0; // Remove newline character
+    message[strcspn(message, "\n")] = 0;
 
     printf("Message published to topic '%s': %s\n", topic, message);
 
@@ -242,9 +237,8 @@ void *handle_connection(void *sfd)
 
 int main()
 {
-    sqlite3_open("broker.db", &db); // Open the SQLite database
+    sqlite3_open("broker.db", &db);
 
-    // Create tables if not exist
     char *err_msg = 0;
     char *create_sql = "CREATE TABLE IF NOT EXISTS subscribers (id INTEGER PRIMARY KEY, socket INTEGER, topic TEXT);";
     sqlite3_exec(db, create_sql, 0, 0, &err_msg);
@@ -320,6 +314,6 @@ int main()
     printf("Connection - ThreadPoolDestroyed\n");
 
     close(server_socket);
-    sqlite3_close(db); // Close the SQLite database
+    sqlite3_close(db);
     return 0;
 }

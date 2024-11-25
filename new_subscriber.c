@@ -12,43 +12,20 @@ int sub_socket;
 
 void signal_handler(int signum)
 {
-    // printf("\nReceived signal %d, closing all file descriptors...\n", signum);
-    // printf("Subscriber_socket: %d", sub_socket);
     send(sub_socket, "exit", sizeof("exit"), 0);
-    // for (int i = 0; i < fd_count; i++) {
-    //     close(sub_socket[i]);
-    //     printf("Closed fd %d\n", sub_socket[i]);
-    // }
-    // printf("Subscriber Socket closed from the sub code\n");
+
     close(sub_socket);
     exit(0);
 }
-
-// void add_fd_to_array(int fd) {
-//     if (fd_count < BUFFER_SIZE) {
-//         sub_socket[fd_count++] = fd;
-//     } else {
-//         //printf("Max file descriptors reached, cannot add more.\n");
-//         int zcdasda;
-//     }
-// }
-
-// void close_all_fds() {
-//     for (int i = 0; i < fd_count; i++) {
-//         close(sub_socket[i]);
-//         printf("Closed fd %d\n", sub_socket[i]);
-//     }
-//     fd_count = 0;
-// }
 
 int main(int argc, char *argv[])
 {
 
     signal(SIGINT, signal_handler);
-    // close_all_fds();
+
     int sock;
     struct sockaddr_in server_addr;
-    // char topic[BUFFER_SIZE];
+
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     // printf("Socket %d\n",sock);
@@ -70,7 +47,6 @@ int main(int argc, char *argv[])
         close(sock);
         exit(EXIT_FAILURE);
     }
-    // add_fd_to_array(sock);
     send(sock, "subscriber", strlen("subscriber"), 0);
 
     // printf("Enter topic to subscribe: ");

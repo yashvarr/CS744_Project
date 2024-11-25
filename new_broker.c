@@ -138,7 +138,7 @@ void *handle_publisher(void *arg)
     time_taken = (double)(end_time - start_time) / CLOCKS_PER_SEC;
     printf("Function runtime: %f seconds\n", time_taken);
     
-    close(new_socket);
+    close(new_socket); //to close the sub socket after it exits
     return NULL;
 }
 
@@ -237,20 +237,6 @@ int main()
     //         continue;
     //     }
 
-    //     char role[BUFFER_SIZE] = {0};
-    //     recv(new_socket, role, sizeof(role), 0);
-
-    //     if (strcmp(role, "subscriber") == 0) {
-    //         pthread_t thread;
-    //         pthread_create(&thread, NULL, handle_subscriber, (void *)&new_socket);
-    //     } else if (strcmp(role, "publisher") == 0) {
-    //         pthread_t thread;
-    //         pthread_create(&thread, NULL, handle_publisher, (void *)&new_socket);
-    //     } else {
-    //         printf("Unknown role: %s\n", role);
-    //         close(new_socket);
-    //     }
-    // }
 
     for (int x = 0; x < num_threads; x++)
     {

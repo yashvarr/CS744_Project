@@ -33,11 +33,11 @@ int main(int argc, char *argv[]) {
 
     printf("Enter topic to publish: ");
     //fgets(topic, sizeof(topic), stdin);
-    send(sock, argv[], strlen(topic), 0);
+    send(sock, argv[1], sizeof(argv[1]), 0);
 
     printf("Enter message to publish: ");
     //fgets(message, sizeof(message), stdin);
-    send(sock, message, strlen(message), 0);
+    send(sock, argv[2], sizeof(argv[2]), 0);
 
     close(sock);
     return 0;
